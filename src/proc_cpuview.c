@@ -977,7 +977,7 @@ int proc_cpuinfo_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	pid_t initpid = lookup_initpid_in_store(fc->pid);
+	pid_t initpid = fc->pid;
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 

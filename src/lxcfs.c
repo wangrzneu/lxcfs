@@ -1384,7 +1384,7 @@ int main(int argc, char *argv[])
 			else if (strcmp(long_options[idx].name, "runtime-dir") == 0)
 				runtime_path_arg = optarg;
 			else if (strcmp(long_options[idx].name, "caller-pid-force") == 0)
-				caller_pid_force = true
+				caller_pid_force = true;
 			else
 				usage();
 			break;

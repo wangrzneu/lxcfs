@@ -559,37 +559,7 @@ out:
 
 pid_t lookup_initpid_in_store(pid_t pid)
 {
-	pid_t hashed_pid = 0;
-	char path[LXCFS_PROC_PID_NS_LEN];
-	struct stat st;
-
-	snprintf(path, sizeof(path), "/proc/%d/ns/pid", pid);
-	if (stat(path, &st))
-		return ret_errno(ESRCH);
-
-	store_lock();
-
-	hashed_pid = lookup_verify_initpid(st.st_ino);
-	if (hashed_pid < 0) {
-		/* release the mutex as the following call is expensive */
-		store_unlock();
-
-		hashed_pid = scm_init_pid(pid);
-
-		store_lock();
-
-		if (hashed_pid > 0)
-			save_initpid(st.st_ino, hashed_pid);
-	}
-
-	/*
-	 * Prune at the end in case we're pruning the value
-	 * we were about to return.
-	 */
-	prune_initpid_store();
-	store_unlock();
-
-	return hashed_pid;
+	return pid
 }
 
 /*

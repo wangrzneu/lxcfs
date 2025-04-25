@@ -559,7 +559,7 @@ out:
 
 pid_t lookup_initpid_in_store(pid_t pid)
 {
-	return pid
+	return pid;
 }
 
 /*

@@ -217,7 +217,8 @@ int proc_loadavg_read(char *buf, size_t size, off_t offset,
 	if (!loadavg)
 		return read_file_fuse("/proc/loadavg", buf, size, d);
 
-	initpid = lookup_initpid_in_store(fc->pid);
+	// initpid = lookup_initpid_in_store(fc->pid);
+    initpid = fc->pid;
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 

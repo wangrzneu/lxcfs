@@ -977,14 +977,15 @@ int proc_cpuinfo_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
+	// pid_t initpid = lookup_initpid_in_store(fc->pid);
 	pid_t initpid = fc->pid;
-        lxcfs_info("Query CPU view %d", initpid);
+	lxcfs_info("Query CPU view %d", initpid);
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
 	cg = get_pid_cgroup(initpid, "cpuset");
 	
-        lxcfs_info("Query cgroup info %s", cg);
+	lxcfs_info("Query cgroup info %s", cg);
 	if (!cg)
 		return read_file_fuse("proc/cpuinfo", buf, size, d);
 	prune_init_slice(cg);

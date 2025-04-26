@@ -100,7 +100,8 @@ static int sys_devices_system_cpu_online_read(char *buf, size_t size,
 		return total_len;
 	}
 
-	initpid = lookup_initpid_in_store(fc->pid);
+	// initpid = lookup_initpid_in_store(fc->pid);
+    initpid = fc->pid;
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -133,7 +134,8 @@ static int sys_devices_system_cpu_online_getsize(const char *path)
         char buf[BUF_RESERVE_SIZE];
         int buflen = sizeof(buf);
 
-        initpid = lookup_initpid_in_store(fc->pid);
+        // initpid = lookup_initpid_in_store(fc->pid);
+        initpid = fc->pid;
         if (initpid <= 1 || is_shared_pidns(initpid))
                 initpid = fc->pid;
 

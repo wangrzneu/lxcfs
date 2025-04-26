@@ -536,7 +536,8 @@ static int proc_swaps_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	pid_t initpid = lookup_initpid_in_store(fc->pid);
+	// pid_t initpid = lookup_initpid_in_store(fc->pid);
+    pid_t initpid = fc->pid;
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -691,7 +692,8 @@ static int proc_diskstats_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	pid_t initpid = lookup_initpid_in_store(fc->pid);
+	// pid_t initpid = lookup_initpid_in_store(fc->pid);
+    pid_t initpid = fc->pid;
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -1418,7 +1420,8 @@ static int proc_meminfo_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	pid_t initpid = lookup_initpid_in_store(fc->pid);
+	// pid_t initpid = lookup_initpid_in_store(fc->pid);
+    pid_t initpid = fc->pid;
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -1645,7 +1648,8 @@ static int proc_slabinfo_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	initpid = lookup_initpid_in_store(fc->pid);
+	// initpid = lookup_initpid_in_store(fc->pid);
+    initpid = fc->pid;
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -1714,7 +1718,8 @@ static int proc_pressure_io_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	initpid = lookup_initpid_in_store(fc->pid);
+	// initpid = lookup_initpid_in_store(fc->pid);
+    initpid = fc->pid;
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -1783,7 +1788,8 @@ static int proc_pressure_cpu_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	initpid = lookup_initpid_in_store(fc->pid);
+	// initpid = lookup_initpid_in_store(fc->pid);
+    initpid = fc->pid;
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -1852,7 +1858,8 @@ static int proc_pressure_memory_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	initpid = lookup_initpid_in_store(fc->pid);
+	// initpid = lookup_initpid_in_store(fc->pid);
+    initpid = fc->pid;
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 

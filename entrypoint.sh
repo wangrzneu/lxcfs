@@ -16,5 +16,5 @@ cat /lxcfs/lxcfs-mount.sh > ${LXCFS_SCRIPT_PATH}/lxcfs-mount.sh
 chmod +x ${LXCFS_SCRIPT_PATH}/lxcfs-mount.sh
 
 # Run lxcfs
-echo /usr/bin/lxcfs --foreground --enable-loadavg --enable-cfs $LXCFS_PATH
-/usr/bin/lxcfs --foreground --enable-loadavg --enable-cfs $LXCFS_PATH
+echo /usr/bin/lxcfs --foreground --caller-view-enable --enable-loadavg --enable-cfs $LXCFS_PATH
+/usr/bin/lxcfs --foreground --caller-view-enable --enable-loadavg --enable-cfs $LXCFS_PATH

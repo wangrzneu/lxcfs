@@ -694,7 +694,6 @@ static int do_sys_releasedir(const char *path, struct fuse_file_info *fi)
 }
 
 static bool cgroup_is_enabled = false;
-static bool caller_pid_force = false;
 
 #if HAVE_FUSE3
 static int lxcfs_getattr(const char *path, struct stat *sb, struct fuse_file_info *fi)
@@ -1246,7 +1245,7 @@ static void usage(void)
 	lxcfs_info("  --enable-cgroup      Enable cgroup emulation code");
 	lxcfs_info("  --runtime-dir=DIR    Path to use as the runtime directory.");
 	lxcfs_info("                       Default is %s", DEFAULT_RUNTIME_PATH);
-	lxcfs_info("  --caller-pid-force   Force to use caller pid for conatiner resource view.");
+	lxcfs_info("  --caller-view-enable   Force to use caller pid for conatiner resource view.");
 	exit(EXIT_FAILURE);
 }
 
@@ -1299,7 +1298,7 @@ static const struct option long_options[] = {
 
 	{"pidfile",		required_argument,	0,	'p'	},
 	{"runtime-dir",		required_argument,	0,	  0	},
-    {"caller-pid-force",	no_argument,		0,	  0	},
+    {"caller-view-enable",	no_argument,		0,	  0	},
 	{								},
 };
 
@@ -1370,6 +1369,7 @@ int main(int argc, char *argv[])
 	opts->swap_off = false;
 	opts->use_pidfd = false;
 	opts->use_cfs = false;
+	opts->caller_view_enable = false;
 	opts->version = 2;
 
 	while ((c = getopt_long(argc, argv, "dulfhvso:p:", long_options, &idx)) != -1) {
@@ -1383,8 +1383,8 @@ int main(int argc, char *argv[])
 				cgroup_is_enabled = true;
 			else if (strcmp(long_options[idx].name, "runtime-dir") == 0)
 				runtime_path_arg = optarg;
-			else if (strcmp(long_options[idx].name, "caller-pid-force") == 0)
-				caller_pid_force = true;
+			else if (strcmp(long_options[idx].name, "caller-view-enable") == 0)
+				opts->caller_view_enable = true;
 			else
 				usage();
 			break;

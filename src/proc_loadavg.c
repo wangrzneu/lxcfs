@@ -191,6 +191,7 @@ int proc_loadavg_read(char *buf, size_t size, off_t offset,
 {
 	__do_free char *cg = NULL;
 	struct fuse_context *fc = fuse_get_context();
+	struct lxcfs_opts *opts = (struct lxcfs_opts *)fc->private_data;
 	struct file_info *d = INTTYPE_TO_PTR(fi->fh);
 	pid_t initpid;
 	ssize_t total_len = 0;
@@ -217,8 +218,11 @@ int proc_loadavg_read(char *buf, size_t size, off_t offset,
 	if (!loadavg)
 		return read_file_fuse("/proc/loadavg", buf, size, d);
 
-	// initpid = lookup_initpid_in_store(fc->pid);
-    initpid = fc->pid;
+	if (opts && opts->caller_view_enable) {
+		initpid = fc->pid;
+	} else {
+		initpid = lookup_initpid_in_store(fc->pid);
+    }
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 

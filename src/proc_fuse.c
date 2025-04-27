@@ -506,6 +506,7 @@ static int proc_swaps_read(char *buf, size_t size, off_t offset,
 	__do_free char *cgroup = NULL, *memusage_str = NULL,
 		 *memswusage_str = NULL, *memswpriority_str = NULL;
 	struct fuse_context *fc = fuse_get_context();
+	struct lxcfs_opts *opts = (struct lxcfs_opts *)fc->private_data;
 	bool wants_swap = lxcfs_has_opt(fuse_get_context()->private_data, LXCFS_SWAP_ON);
 	struct file_info *d = INTTYPE_TO_PTR(fi->fh);
 	uint64_t memlimit = 0, memusage = 0,
@@ -519,6 +520,7 @@ static int proc_swaps_read(char *buf, size_t size, off_t offset,
 	__do_free void *fopen_cache = NULL;
 	__do_fclose FILE *f = NULL;
 	size_t linelen = 0;
+	pid_t initpid;
 
 	if (offset) {
 		size_t left;
@@ -536,8 +538,11 @@ static int proc_swaps_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	// pid_t initpid = lookup_initpid_in_store(fc->pid);
-    pid_t initpid = fc->pid;
+	if (opts && opts->caller_view_enable) {
+		initpid = fc->pid;
+	} else {
+		initpid = lookup_initpid_in_store(fc->pid);
+    }
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -665,6 +670,7 @@ static int proc_diskstats_read(char *buf, size_t size, off_t offset,
 	__do_free void *fopen_cache = NULL;
 	__do_fclose FILE *f = NULL;
 	struct fuse_context *fc = fuse_get_context();
+	struct lxcfs_opts *opts = (struct lxcfs_opts *)fc->private_data;
 	struct file_info *d = INTTYPE_TO_PTR(fi->fh);
 	struct lxcfs_diskstats stats = {};
 	/* helper fields */
@@ -675,6 +681,7 @@ static int proc_diskstats_read(char *buf, size_t size, off_t offset,
 	size_t linelen = 0, total_len = 0;
 	int i = 0;
 	int ret;
+	pid_t initpid;
 
 	if (offset) {
 		size_t left;
@@ -692,8 +699,11 @@ static int proc_diskstats_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	// pid_t initpid = lookup_initpid_in_store(fc->pid);
-    pid_t initpid = fc->pid;
+	if (opts && opts->caller_view_enable) {
+		initpid = fc->pid;
+	} else {
+		initpid = lookup_initpid_in_store(fc->pid);
+    }
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -1393,6 +1403,7 @@ static int proc_meminfo_read(char *buf, size_t size, off_t offset,
 	__do_free void *fopen_cache = NULL;
 	__do_fclose FILE *f = NULL;
 	struct fuse_context *fc = fuse_get_context();
+	struct lxcfs_opts *opts = (struct lxcfs_opts *)fc->private_data;
 	bool wants_swap = lxcfs_has_opt(fuse_get_context()->private_data, LXCFS_SWAP_ON);
 	struct file_info *d = INTTYPE_TO_PTR(fi->fh);
 	uint64_t memlimit = 0, memusage = 0,
@@ -1403,6 +1414,7 @@ static int proc_meminfo_read(char *buf, size_t size, off_t offset,
 	char *cache = d->buf;
 	size_t cache_size = d->buflen;
 	int ret;
+    pid_t initpid;
 
 	if (offset) {
 		size_t left;
@@ -1420,8 +1432,11 @@ static int proc_meminfo_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	// pid_t initpid = lookup_initpid_in_store(fc->pid);
-    pid_t initpid = fc->pid;
+	if (opts && opts->caller_view_enable) {
+		initpid = fc->pid;
+	} else {
+		initpid = lookup_initpid_in_store(fc->pid);
+    }
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -1626,6 +1641,7 @@ static int proc_slabinfo_read(char *buf, size_t size, off_t offset,
 	__do_fclose FILE *f = NULL;
 	__do_close int fd = -EBADF;
 	struct fuse_context *fc = fuse_get_context();
+	struct lxcfs_opts *opts = (struct lxcfs_opts *)fc->private_data;
 	struct file_info *d = INTTYPE_TO_PTR(fi->fh);
 	size_t linelen = 0, total_len = 0;
 	char *cache = d->buf;
@@ -1648,8 +1664,11 @@ static int proc_slabinfo_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	// initpid = lookup_initpid_in_store(fc->pid);
-    initpid = fc->pid;
+	if (opts && opts->caller_view_enable) {
+		initpid = fc->pid;
+	} else {
+		initpid = lookup_initpid_in_store(fc->pid);
+    }
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -1696,6 +1715,7 @@ static int proc_pressure_io_read(char *buf, size_t size, off_t offset,
 	__do_fclose FILE *f = NULL;
 	__do_close int fd = -EBADF;
 	struct fuse_context *fc = fuse_get_context();
+	struct lxcfs_opts *opts = (struct lxcfs_opts *)fc->private_data;
 	struct file_info *d = INTTYPE_TO_PTR(fi->fh);
 	size_t linelen = 0, total_len = 0;
 	char *cache = d->buf;
@@ -1718,8 +1738,11 @@ static int proc_pressure_io_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	// initpid = lookup_initpid_in_store(fc->pid);
-    initpid = fc->pid;
+	if (opts && opts->caller_view_enable) {
+		initpid = fc->pid;
+	} else {
+		initpid = lookup_initpid_in_store(fc->pid);
+    }
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -1766,6 +1789,7 @@ static int proc_pressure_cpu_read(char *buf, size_t size, off_t offset,
 	__do_fclose FILE *f = NULL;
 	__do_close int fd = -EBADF;
 	struct fuse_context *fc = fuse_get_context();
+	struct lxcfs_opts *opts = (struct lxcfs_opts *)fc->private_data;
 	struct file_info *d = INTTYPE_TO_PTR(fi->fh);
 	size_t linelen = 0, total_len = 0;
 	char *cache = d->buf;
@@ -1788,8 +1812,11 @@ static int proc_pressure_cpu_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	// initpid = lookup_initpid_in_store(fc->pid);
-    initpid = fc->pid;
+	if (opts && opts->caller_view_enable) {
+		initpid = fc->pid;
+	} else {
+		initpid = lookup_initpid_in_store(fc->pid);
+    }
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -1836,6 +1863,7 @@ static int proc_pressure_memory_read(char *buf, size_t size, off_t offset,
 	__do_fclose FILE *f = NULL;
 	__do_close int fd = -EBADF;
 	struct fuse_context *fc = fuse_get_context();
+	struct lxcfs_opts *opts = (struct lxcfs_opts *)fc->private_data;
 	struct file_info *d = INTTYPE_TO_PTR(fi->fh);
 	size_t linelen = 0, total_len = 0;
 	char *cache = d->buf;
@@ -1858,8 +1886,11 @@ static int proc_pressure_memory_read(char *buf, size_t size, off_t offset,
 		return total_len;
 	}
 
-	// initpid = lookup_initpid_in_store(fc->pid);
-    initpid = fc->pid;
+	if (opts && opts->caller_view_enable) {
+		initpid = fc->pid;
+	} else {
+		initpid = lookup_initpid_in_store(fc->pid);
+    }
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 

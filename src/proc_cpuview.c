@@ -960,6 +960,7 @@ int proc_cpuinfo_read(char *buf, size_t size, off_t offset,
 	bool use_view;
 	char *cache = d->buf;
 	size_t cache_size = d->buflen;
+	pid_t initpid;
 
 	if (offset) {
 		size_t left;
@@ -976,9 +977,11 @@ int proc_cpuinfo_read(char *buf, size_t size, off_t offset,
 
 		return total_len;
 	}
-
-	// pid_t initpid = lookup_initpid_in_store(fc->pid);
-	pid_t initpid = fc->pid;
+	if (opts && opts->caller_view_enable) {
+		initpid = fc->pid;
+	} else {
+		initpid = lookup_initpid_in_store(fc->pid);
+    }
 	lxcfs_info("Query CPU view %d", initpid);
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;

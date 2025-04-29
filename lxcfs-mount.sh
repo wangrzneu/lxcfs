@@ -68,8 +68,8 @@ lxcfs_remount() {
     fi
     # /proc/$file mount point not in mount table and fuse.lxcfs filesystem mount in container, remount it
     if nsenter -t "$container_pid" -m -- test -e "$LXCFS_PATH/proc/$file" && ! nsenter -t "$container_pid" -m -p -- mount -t fuse.lxcfs | grep -qs "/proc/$file"; then
-      echo nsenter -t "$container_pid" -m -- mount -B -v -o ro "$LXCFS_PATH/proc/$file" "/proc/$file"
-      nsenter -t "$container_pid" -m -- mount -B -v -o ro "$LXCFS_PATH/proc/$file" "/proc/$file"
+      echo nsenter -t "$container_pid" -m -- mount -o bind -v -o ro "$LXCFS_PATH/proc/$file" "/proc/$file"
+      nsenter -t "$container_pid" -m -- mount -o bind -v -o ro "$LXCFS_PATH/proc/$file" "/proc/$file"
     fi
   done
 
@@ -79,8 +79,8 @@ lxcfs_remount() {
     nsenter -t "$container_pid" -m -p -- umount -v "/sys/devices/system/cpu/online"
   fi
   if nsenter -t "$container_pid" -m -- test -e "$LXCFS_PATH/sys/devices/system/cpu/online" && ! nsenter -t "$container_pid" -m -p -- mount -t fuse.lxcfs | grep -qs "/sys/devices/system/cpu/online"; then
-    echo nsenter -t "$container_pid" -m -- mount -B -v -o ro "$LXCFS_PATH/sys/devices/system/cpu/online" "/sys/devices/system/cpu/online"
-    nsenter -t "$container_pid" -m -- mount -B -v -o ro "$LXCFS_PATH/sys/devices/system/cpu/online" "/sys/devices/system/cpu/online"
+    echo nsenter -t "$container_pid" -m -- mount -o bind -v -o ro "$LXCFS_PATH/sys/devices/system/cpu/online" "/sys/devices/system/cpu/online"
+    nsenter -t "$container_pid" -m -- mount -o bind -v -o ro "$LXCFS_PATH/sys/devices/system/cpu/online" "/sys/devices/system/cpu/online"
   fi
 }
 

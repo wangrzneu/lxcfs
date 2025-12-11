@@ -79,6 +79,7 @@ static int sys_devices_system_cpu_online_read(char *buf, size_t size,
 {
 	__do_free char *cg = NULL, *cpu_cg = NULL;
 	struct fuse_context *fc = fuse_get_context();
+	struct lxcfs_opts *opts = (struct lxcfs_opts *)fc->private_data;
 	struct file_info *d = INTTYPE_TO_PTR(fi->fh);
 	char *cache = d->buf;
 	pid_t initpid;
@@ -100,7 +101,11 @@ static int sys_devices_system_cpu_online_read(char *buf, size_t size,
 		return total_len;
 	}
 
-	initpid = lookup_initpid_in_store(fc->pid);
+	if (opts && opts->caller_view_enable) {
+		initpid = fc->pid;
+	} else {
+		initpid = lookup_initpid_in_store(fc->pid);
+    }
 	if (initpid <= 1 || is_shared_pidns(initpid))
 		initpid = fc->pid;
 
@@ -129,11 +134,16 @@ static int sys_devices_system_cpu_online_getsize(const char *path)
 {
         __do_free char *cg = NULL, *cpu_cg = NULL;
         struct fuse_context *fc = fuse_get_context();
+		struct lxcfs_opts *opts = (struct lxcfs_opts *)fc->private_data;
         pid_t initpid;
         char buf[BUF_RESERVE_SIZE];
         int buflen = sizeof(buf);
 
-        initpid = lookup_initpid_in_store(fc->pid);
+		if (opts && opts->caller_view_enable) {
+			initpid = fc->pid;
+		} else {
+			initpid = lookup_initpid_in_store(fc->pid);
+    	}
         if (initpid <= 1 || is_shared_pidns(initpid))
                 initpid = fc->pid;
 

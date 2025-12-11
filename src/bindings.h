@@ -120,6 +120,7 @@ struct lxcfs_opts {
 	bool swap_off;
 	bool use_pidfd;
 	bool use_cfs;
+    bool caller_view_enable;
 	/*
 	 * Ideally we'd version by size but because of backwards compatability
 	 * and the use of bool instead of explicited __u32 and __u64 we can't.
